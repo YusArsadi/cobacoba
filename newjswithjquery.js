@@ -1,35 +1,35 @@
-window.onload = function() {
+$(function() {
 
     // Declare all initiliation variables
-    var keys         = document.getElementsByTagName('button'),
+    var keys         = $('button'),
         operators    = ['/', '*', '-', '+', '%'],
         lastOperator = '',
         decimalAdded = false;
 
     // Loop all key
-    for (var i = 0; i < keys.length; i++) {
+    keys.each(function(i){
 
         // Add click event listener to all key
-        keys[i].onclick = function() {
+        $(this).click(function(){        
 
             // Add initial variables
-            var keyValue    = this.innerHTML,
-                detail      = document.getElementById('detail'),
-                detailValue = detail.innerHTML,
+            var keyValue    = $(this).html(),
+                detail      = $('#detail'),
+                detailValue = detail.html(),
                 lastChar    = detailValue[detailValue.length - 1],
-                result      = document.getElementById('result-value');
+                result      = $('#result-value');
 
             // Use switch case for different function of keys
             switch (keyValue) {
                 // Case for clearing the calculator
                 case 'C':
-                    result.innerHTML = '0';
-                    detail.innerHTML = '';
+                    result.html('0');
+                    detail.html('');
                     break;
                 // Show the result for calculation
                 case '=':
-                    if (detail.innerHTML != '') {
-                        result.innerHTML = eval(detailValue);
+                    if (detail.html() != '') {
+                        result.html(eval(detailValue));
                         decimalAdded = false;
                     }
                     break;
@@ -39,10 +39,11 @@ window.onload = function() {
                 case '-':
                 case '+':
                 case '%':
-                    if (detailValue != '' && operators.indexOf(lastChar) == -1) {
-                        detail.innerHTML += keyValue;
+
+                    if (detailValue != '' && $.inArray(lastChar,operators) == -1) {
+                        detail.html( detailValue + keyValue);
                     } else {
-                        detail.innerHTML = detail.innerHTML.replace(/.$/, keyValue);
+                        detail.html(detail.html().replace(/.$/, keyValue));
                     }
 
                     decimalAdded = false;
@@ -54,26 +55,26 @@ window.onload = function() {
                         decimalAdded = false;
                     }
 
-                    detail.innerHTML = detail.innerHTML.replace(/.$/, '');
+                    detail.html(detail.html().replace(/.$/, ''));
                     break;
                 // Case for add period
                 case '.':
                     if ( ! decimalAdded) {
-                        detail.innerHTML += keyValue;
+                        detail.html(detailValue + keyValue);
                         decimalAdded = true;
                     }
                     break;
                 // Case for signing minus/plus to the last calculation
                 case '+/-':
-                    if (detailValue != '' && operators.indexOf(lastChar) == -1) {
+                    if (detailValue != '' && $.inArray(lastChar,operators) == -1) {
                         if (lastOperator == '') {
                             if (detailValue == Math.abs(detailValue)) {
-                                detail.innerHTML = -(detailValue);
+                                detail.html(-(detailValue));
                             } else {
-                                detail.innerHTML = Math.abs(eval(detailValue));
+                                detail.html(Math.abs(eval(detailValue)));
                             }
                         } else {
-                            var array     = detail.innerHTML.split(lastOperator),
+                            var array     = detail.html().split(lastOperator),
                                 lastIndex = array.length - 1,
                                 newDetail = '',
                                 oldDetail = '';
@@ -88,16 +89,16 @@ window.onload = function() {
                                 oldDetail += array[i] + lastOperator;
                             }
 
-                            detail.innerHTML = oldDetail + newDetail;
+                            detail.html(oldDetail + newDetail);
                         }
                     }
                     break;
                 // Beside of that, just displaying the key value to the calculation
                 // This is used for number
                 default:
-                    detail.innerHTML += keyValue;
+                    detail.html(detailValue+keyValue);
                     break;
             }
-        }
-    }
-}
+        });
+    });
+});
